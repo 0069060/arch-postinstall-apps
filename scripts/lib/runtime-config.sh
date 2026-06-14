@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+# shellcheck disable=SC2034
+
+config_init_common_defaults() {
+  REPO_HTTPS_URL="https://github.com/obslove/arch-postinstall-apps.git"
+  REPO_SSH_URL="git@github.com:obslove/arch-postinstall-apps.git"
+  PROJECTS_DIR="$HOME/Projects"
+  REPOSITORIES_DIR="$HOME/Repositories"
+  BACKUPS_DIR="$HOME/Backups"
+  INSTALL_DIR="$PROJECTS_DIR/arch-postinstall-apps"
+  YAY_REPO_DIR="$REPOSITORIES_DIR/yay"
+  EASY_EFFECTS_PRESET_DIR="$HOME/EasyEffects-Preset"
+  EASY_EFFECTS_PRESET_REPO_HTTPS_URL="${POSTINSTALL_EASY_EFFECTS_PRESET_REPO_HTTPS_URL:-${POSTINSTALL_EASY_EFFECTS_PRESET_REPO_URL:-${EASY_EFFECTS_PRESET_REPO_HTTPS_URL:-${EASY_EFFECTS_PRESET_REPO_URL:-https://github.com/obslove/EasyEffects-Preset.git}}}}"
+  EASY_EFFECTS_PRESET_REPO_SSH_URL="${POSTINSTALL_EASY_EFFECTS_PRESET_REPO_SSH_URL:-${EASY_EFFECTS_PRESET_REPO_SSH_URL:-git@github.com:obslove/EasyEffects-Preset.git}}"
+  TERMINAL_LYRICS_DIR="${POSTINSTALL_TERMINAL_LYRICS_DIR:-${TERMINAL_LYRICS_DIR:-$PROJECTS_DIR/terminal-lyrics}}"
+  TERMINAL_LYRICS_REPO_HTTPS_URL="${POSTINSTALL_TERMINAL_LYRICS_REPO_HTTPS_URL:-${TERMINAL_LYRICS_REPO_HTTPS_URL:-https://github.com/obslove/terminal-lyrics.git}}"
+  TERMINAL_LYRICS_REPO_SSH_URL="${POSTINSTALL_TERMINAL_LYRICS_REPO_SSH_URL:-${TERMINAL_LYRICS_REPO_SSH_URL:-git@github.com:obslove/terminal-lyrics.git}}"
+  SYNTHETIC_PROFILE_GENERATOR_DIR="${POSTINSTALL_SYNTHETIC_PROFILE_GENERATOR_DIR:-${SYNTHETIC_PROFILE_GENERATOR_DIR:-$PROJECTS_DIR/synthetic-profile-generator}}"
+  SYNTHETIC_PROFILE_GENERATOR_REPO_HTTPS_URL="${POSTINSTALL_SYNTHETIC_PROFILE_GENERATOR_REPO_HTTPS_URL:-${SYNTHETIC_PROFILE_GENERATOR_REPO_HTTPS_URL:-https://github.com/obslove/synthetic-profile-generator.git}}"
+  SYNTHETIC_PROFILE_GENERATOR_REPO_SSH_URL="${POSTINSTALL_SYNTHETIC_PROFILE_GENERATOR_REPO_SSH_URL:-${SYNTHETIC_PROFILE_GENERATOR_REPO_SSH_URL:-git@github.com:obslove/synthetic-profile-generator.git}}"
+  OBSLOVE_DOTS_DIR="${POSTINSTALL_OBSLOVE_DOTS_DIR:-${OBSLOVE_DOTS_DIR:-$HOME/Dots/obslove}}"
+  OBSLOVE_DOTS_REPO_HTTPS_URL="${POSTINSTALL_OBSLOVE_DOTS_REPO_HTTPS_URL:-${OBSLOVE_DOTS_REPO_HTTPS_URL:-https://github.com/obslove/obslove.git}}"
+  OBSLOVE_DOTS_REPO_SSH_URL="${POSTINSTALL_OBSLOVE_DOTS_REPO_SSH_URL:-${OBSLOVE_DOTS_REPO_SSH_URL:-git@github.com:obslove/obslove.git}}"
+  DOTS_HYPRLAND_DIR="${POSTINSTALL_DOTS_HYPRLAND_DIR:-${DOTS_HYPRLAND_DIR:-$REPOSITORIES_DIR/dots-hyprland}}"
+  DOTS_HYPRLAND_REPO_HTTPS_URL="${POSTINSTALL_DOTS_HYPRLAND_REPO_HTTPS_URL:-${DOTS_HYPRLAND_REPO_HTTPS_URL:-https://github.com/end-4/dots-hyprland.git}}"
+  DOTS_HYPRLAND_REPO_SSH_URL="${POSTINSTALL_DOTS_HYPRLAND_REPO_SSH_URL:-${DOTS_HYPRLAND_REPO_SSH_URL:-git@github.com:end-4/dots-hyprland.git}}"
+  II_VYNX_DIR="${POSTINSTALL_II_VYNX_DIR:-${II_VYNX_DIR:-$REPOSITORIES_DIR/ii-vynx}}"
+  II_VYNX_REPO_HTTPS_URL="${POSTINSTALL_II_VYNX_REPO_HTTPS_URL:-${II_VYNX_REPO_HTTPS_URL:-https://github.com/vaguesyntax/ii-vynx.git}}"
+  II_VYNX_REPO_SSH_URL="${POSTINSTALL_II_VYNX_REPO_SSH_URL:-${II_VYNX_REPO_SSH_URL:-git@github.com:vaguesyntax/ii-vynx.git}}"
+  YAY_SNAPSHOT_URL="${POSTINSTALL_YAY_SNAPSHOT_URL:-${YAY_SNAPSHOT_URL:-https://aur.archlinux.org/cgit/aur.git/snapshot/yay.tar.gz}}"
+  SSH_KEY_PATH="${POSTINSTALL_SSH_KEY_PATH:-${SSH_KEY_PATH:-$HOME/.ssh/id_ed25519}}"
+  GITHUB_SSH_KEY_NAME="${POSTINSTALL_GITHUB_SSH_KEY_NAME:-${GITHUB_SSH_KEY_NAME:-}}"
+  LOG_FILE="${POSTINSTALL_LOG_FILE:-$BACKUPS_DIR/arch-postinstall.log}"
+  SUMMARY_FILE="${POSTINSTALL_SUMMARY_FILE:-$BACKUPS_DIR/arch-postinstall-summary.txt}"
+  CHECK_ONLY="${POSTINSTALL_CHECK_ONLY:-${CHECK_ONLY:-0}}"
+  DRY_RUN="${POSTINSTALL_DRY_RUN:-${DRY_RUN:-0}}"
+  ALLOW_HOME_CHANGES="${POSTINSTALL_ALLOW_HOME_CHANGES:-${ALLOW_HOME_CHANGES:-0}}"
+  ALLOW_SYSTEM_CONFIG="${POSTINSTALL_ALLOW_SYSTEM_CONFIG:-${ALLOW_SYSTEM_CONFIG:-0}}"
+  EXCLUSIVE_GITHUB_SSH_KEY="${POSTINSTALL_EXCLUSIVE_GITHUB_SSH_KEY:-${EXCLUSIVE_GITHUB_SSH_KEY:-0}}"
+  SKIP_GITHUB_SSH="${POSTINSTALL_SKIP_GITHUB_SSH:-${SKIP_GITHUB_SSH:-0}}"
+  STEP_OUTPUT_ONLY="${POSTINSTALL_STEP_OUTPUT_ONLY:-${STEP_OUTPUT_ONLY:-1}}"
+  STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/arch-postinstall-apps"
+  LOCK_DIR="$STATE_DIR/lock"
+  LOCK_HELD="${POSTINSTALL_LOCK_HELD:-0}"
+  managed_repo_manifest_init
+}
+
+config_init_user_shell_paths() {
+  BASHRC_FILE="$HOME/.bashrc"
+  ZSHRC_FILE="$HOME/.zshrc"
+  FISH_CONFIG_FILE="$HOME/.config/fish/config.fish"
+}
+
+config_init_repo_paths() {
+  local repo_dir="$1"
+
+  REPO_DIR="$repo_dir"
+  SCRIPT_DIR="$REPO_DIR"
+  PACKAGE_FILE="$REPO_DIR/config/packages.txt"
+  EXTRA_PACKAGE_FILE="$REPO_DIR/config/packages-extra.txt"
+}
+
+config_init_runtime() {
+  local repo_dir="$1"
+
+  config_init_common_defaults
+  config_init_user_shell_paths
+  config_init_repo_paths "$repo_dir"
+  SYSTEM_UPDATED="${POSTINSTALL_BOOTSTRAP_UPDATED:-${POSTINSTALL_SYSTEM_UPDATED:-0}}"
+}
+
+config_init_bootstrap() {
+  config_init_common_defaults
+  config_init_user_shell_paths
+  config_init_repo_paths "$INSTALL_DIR"
+  SYSTEM_UPDATED=0
+}
+
+config_finalize() {
+  readonly REPO_DIR
+  readonly SCRIPT_DIR
+  readonly PACKAGE_FILE
+  readonly EXTRA_PACKAGE_FILE
+  readonly BASHRC_FILE
+  readonly ZSHRC_FILE
+  readonly FISH_CONFIG_FILE
+  readonly REPO_HTTPS_URL
+  readonly REPO_SSH_URL
+  readonly PROJECTS_DIR
+  readonly REPOSITORIES_DIR
+  readonly BACKUPS_DIR
+  readonly INSTALL_DIR
+  readonly YAY_REPO_DIR
+  readonly EASY_EFFECTS_PRESET_DIR
+  readonly EASY_EFFECTS_PRESET_REPO_HTTPS_URL
+  readonly EASY_EFFECTS_PRESET_REPO_SSH_URL
+  readonly TERMINAL_LYRICS_DIR
+  readonly TERMINAL_LYRICS_REPO_HTTPS_URL
+  readonly TERMINAL_LYRICS_REPO_SSH_URL
+  readonly SYNTHETIC_PROFILE_GENERATOR_DIR
+  readonly SYNTHETIC_PROFILE_GENERATOR_REPO_HTTPS_URL
+  readonly SYNTHETIC_PROFILE_GENERATOR_REPO_SSH_URL
+  readonly OBSLOVE_DOTS_DIR
+  readonly OBSLOVE_DOTS_REPO_HTTPS_URL
+  readonly OBSLOVE_DOTS_REPO_SSH_URL
+  readonly DOTS_HYPRLAND_DIR
+  readonly DOTS_HYPRLAND_REPO_HTTPS_URL
+  readonly DOTS_HYPRLAND_REPO_SSH_URL
+  readonly II_VYNX_DIR
+  readonly II_VYNX_REPO_HTTPS_URL
+  readonly II_VYNX_REPO_SSH_URL
+  readonly YAY_SNAPSHOT_URL
+  readonly SSH_KEY_PATH
+  readonly GITHUB_SSH_KEY_NAME
+  readonly LOG_FILE
+  readonly SUMMARY_FILE
+  readonly CHECK_ONLY
+  readonly DRY_RUN
+  readonly ALLOW_HOME_CHANGES
+  readonly ALLOW_SYSTEM_CONFIG
+  readonly EXCLUSIVE_GITHUB_SSH_KEY
+  readonly SKIP_GITHUB_SSH
+  readonly STEP_OUTPUT_ONLY
+  readonly STATE_DIR
+  readonly LOCK_DIR
+  readonly SYSTEM_UPDATED
+}

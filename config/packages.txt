@@ -1,0 +1,27 @@
+# Use `[Categoria]` para agrupar os apps principais.
+# Linhas vazias e linhas iniciadas com `#` são ignoradas.
+# A ordem das categorias e dos apps é respeitada pelo instalador.
+# Componentes declarados do setup ficam em `config/components.sh`.
+
+[Browsers]
+zen-browser-bin
+firefox
+
+[Audio]
+easyeffects
+
+[Development]
+code
+
+[Social]
+discord
+spotify-launcher
+
+[Network]
+mullvad-vpn
+
+[Gaming]
+steam
+
+[Utilities]
+less

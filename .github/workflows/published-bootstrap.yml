@@ -1,0 +1,25 @@
+name: published-bootstrap
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+concurrency:
+  group: published-bootstrap-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  published:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure generated bootstrap is current
+        run: bash scripts/build-bootstrap.sh --check
+      - name: Verify published bootstrap matches main
+        run: bash scripts/check-published-bootstrap.sh --retry 18 --sleep 10
